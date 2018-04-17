@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='pyaweminerapi',
-      version='0.1',
+      version='0.3',
       description='Simple Python API Wrapper for AwesomeMiner',
       url='http://github.com/concongo/pyaweminerapi',
       author='J. Fernando Gonzalez',

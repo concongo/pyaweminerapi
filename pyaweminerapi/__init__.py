@@ -41,12 +41,13 @@ class pyaweminapi:
         _fans = []
         data = self.getminers()
         for miner in data:
-            if miner["statusInfo"]["statusDisplay"] != "Disabled":
+            hr["name"] = miner["name"]
+            hr["status"] = miner["statusInfo"]["statusDisplay"]
+            if hr["status"] not in ["Disconnected","Disabled"]:
                 for gpu in miner["gpuList"]:
                     _hr.append(gpu["speedInfo"]["hashrate"])
                     _temps.append(gpu["deviceInfo"]["temperature"])
                     _fans.append(gpu["deviceInfo"]["fanPercent"])
-                hr["name"]=miner["name"]
                 hr["gpuhashrates"]=_hr
                 hr["totalhashrate"]=miner["speedInfo"]["hashrate"]
                 hr["totalhashratesecondary"]=miner["speedInfo"]["line2"]
@@ -55,9 +56,9 @@ class pyaweminapi:
                 hr["timerunning"]=miner["statusInfo"]["statusLine3"]
                 hr["temps"]=_temps
                 hr["fans"]=_fans
-                _review.append(hr)
-                _hr = []
-                _fans = []
-                _temps = []
-                hr = {}
+            _review.append(hr)
+            _hr = []
+            _fans = []
+            _temps = []
+            hr = {}
         return _review

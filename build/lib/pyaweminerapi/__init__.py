@@ -26,10 +26,11 @@ class pyaweminapi:
         _temps = []
         data = self.getminers()
         for miner in data:
-            for gpu in miner["gpuList"]:
-                _temps.append(gpu["deviceInfo"]["temperature"])
-            temps[miner["name"]]=_temps
-            _temps = []
+            if miner["statusInfo"]["statusDisplay"]!="Disabled":
+                for gpu in miner["gpuList"]:
+                    _temps.append(gpu["deviceInfo"]["temperature"])
+                temps[miner["name"]]=_temps
+                _temps = []
         return temps
 
     def getMinersBriefing(self):
@@ -40,22 +41,25 @@ class pyaweminapi:
         _fans = []
         data = self.getminers()
         for miner in data:
-            for gpu in miner["gpuList"]:
-                _hr.append(gpu["speedInfo"]["hashrate"])
-                _temps.append(gpu["deviceInfo"]["temperature"])
-                _fans.append(gpu["deviceInfo"]["fanPercent"])
-            hr["name"]=miner["name"]
-            hr["gpuhashrates"]=_hr
-            hr["totalhashrate"]=miner["speedInfo"]["hashrate"]
-            hr["totalhashratesecondary"]=miner["speedInfo"]["line2"]
-            hr["mainpool"]=miner["poolList"][0]["additionalInfo"]["displayUrl"]
-            hr["dualpool"]=miner["poolList"][1]["additionalInfo"]["displayUrl"]
-            hr["timerunning"]=miner["statusInfo"]["statusLine3"]
-            hr["temps"]=_temps
-            hr["fans"]=_fans
-            _review.append(hr)
-            _hr = []
-            _fans = []
-            _temps = []
-            hr = {}
+            status = miner["statusInfo"]["statusDisplay"]
+            if status != 'Disconnected':
+                if miner["statusInfo"]["statusDisplay"] != "Disabled":
+                    for gpu in miner["gpuList"]:
+                        _hr.append(gpu["speedInfo"]["hashrate"])
+                        _temps.append(gpu["deviceInfo"]["temperature"])
+                        _fans.append(gpu["deviceInfo"]["fanPercent"])
+                    hr["name"]=miner["name"]
+                    hr["gpuhashrates"]=_hr
+                    hr["totalhashrate"]=miner["speedInfo"]["hashrate"]
+                    hr["totalhashratesecondary"]=miner["speedInfo"]["line2"]
+                    hr["mainpool"]=miner["poolList"][0]["additionalInfo"]["displayUrl"]
+                    hr["dualpool"]=miner["poolList"][1]["additionalInfo"]["displayUrl"]
+                    hr["timerunning"]=miner["statusInfo"]["statusLine3"]
+                    hr["temps"]=_temps
+                    hr["fans"]=_fans
+                    _review.append(hr)
+                    _hr = []
+                    _fans = []
+                    _temps = []
+                    hr = {}
         return _review
